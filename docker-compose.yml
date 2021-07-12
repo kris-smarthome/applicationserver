@@ -1,0 +1,77 @@
+
+version: "3"
+# Networks
+# Create the networks before running docker-compose up -d
+# docker network create inside_network
+# docker network create outside_network
+
+networks:
+  outside_network:
+    external:
+      name: outside_network
+  inside_network:
+    external:
+      name: inside_network
+
+# Applications
+# [9000] NGINX proxy manager
+# [9001] Portainer
+# [9002] DashMachine
+
+services:
+  # NGINX proxy manager: Reverse proxy
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: npm
+    restart: always
+    ports:
+      - '80:80'   # Public HTTP
+      - '443:443' # Public HTTPS
+      - '9000:81' # Admin console
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    environment:
+      DB_SQLITE_FILE: '/data/database.sqlite'
+    volumes:
+      - ${DOCKERDIR}/app_data/npm:/data
+      - ${DOCKERDIR}/app_data/npm/letsencrypt:/etc/letsencrypt
+    networks:
+      - outside_network
+
+  # Portainer: Docker management
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9001:9000"
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKERDIR}/app_data/portainer:/data
+    networks:
+      - inside_network
+
+  # Dashmachine: Server dashboards
+  dashmachine:
+    image: rmountjoy/dashmachine:latest
+    container_name: dashmachine
+    restart: unless-stopped
+    ports:
+      - "9002:5000"
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERDIR}/app_data/dashmachine:/dashmachine/dashmachine/user_data
+    networks:
+      - inside_network
