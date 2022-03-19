@@ -8,10 +8,10 @@ sudo docker network create outside_network
 ```
 
 Set the following variables in the .env file, examples are given in square brackets:
-- PUID= [the PUID of your user account ] 
-- PGID= [the PGID of your user account] 
-- TZ= ["Europe/London"]
-- DOCKERDIR= ["/home/user/docker"]
+- PUID [the PUID of your user account ] 
+- PGID [the PGID of your user account] 
+- TZ ["Europe/London"]
+- DOCKERDIR ["/home/user/docker"]
 
 View the PUID and PGID for the current user using the ```id``` command.
 
