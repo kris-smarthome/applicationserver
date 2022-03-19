@@ -1,9 +1,16 @@
-
-version: "3"
-# Networks
-# Create the networks before running docker-compose up -d
+# Application server stack - Kris 22
+# 
+# Create networks before running docker-compose -p application_server up -d
 # docker network create inside_network
 # docker network create outside_network
+
+# .env file variables:
+# $PUID
+# $PGID
+# $TZ  
+# $DOCKERDIR
+
+version: "3"
 
 networks:
   outside_network:
@@ -16,10 +23,10 @@ networks:
 # Applications
 # [9000] NGINX proxy manager
 # [9001] Portainer
-# [9002] DashMachine
 
 services:
   # NGINX proxy manager: Reverse proxy
+  #
   npm:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: npm
@@ -39,10 +46,12 @@ services:
     volumes:
       - ${DOCKERDIR}/app_data/npm:/data
       - ${DOCKERDIR}/app_data/npm/letsencrypt:/etc/letsencrypt
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - outside_network
 
   # Portainer: Docker management
+  #
   portainer:
     image: portainer/portainer-ce
     container_name: portainer
@@ -57,21 +66,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DOCKERDIR}/app_data/portainer:/data
-    networks:
-      - inside_network
-
-  # Dashmachine: Server dashboards
-  dashmachine:
-    image: rmountjoy/dashmachine:latest
-    container_name: dashmachine
-    restart: unless-stopped
-    ports:
-      - "9002:5000"
-    security_opt:
-      - no-new-privileges:true
-    environment:
-      - TZ=${TZ}
-    volumes:
-      - ${DOCKERDIR}/app_data/dashmachine:/dashmachine/dashmachine/user_data
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - inside_network
