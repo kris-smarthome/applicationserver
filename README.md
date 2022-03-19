@@ -13,6 +13,18 @@ Set the following variables in the .env file, examples are given in square brack
 - TZ ["Europe/London"]
 - DOCKERDIR ["/home/user/docker"]
 
+Vaultwarden specific:
+- DOMAIN [your-domain-name]
+- ADMIN_TOKEN [required to enable the admin page: should be a long random string]
+
+Email configuration if required:
+- SMTP_HOST 
+- SMTP_PORT
+- SMTP_SSL
+- SMTP_FROM
+- SMTP_USERNAME
+- SMTP_PASSWORD
+
 View the PUID and PGID for the current user using the ```id``` command.
 
 Bring up the stack:
@@ -23,6 +35,7 @@ sudo docker-compose -p application_server up -d
 Applications included with this stack:
 - [9000] NGINX proxy manager
 - [9001] Portainer
+- [9002] VaultWarden
 
 ## Post installation
 There are no post installation tasks for this stack.
