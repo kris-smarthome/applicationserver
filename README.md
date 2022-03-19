@@ -3,8 +3,8 @@ Docker compose file for a basic application server consisting of Nginx Proxy Man
 
 Create networks:
 ```
-docker network create inside_network
-docker network create outside_network
+sudo docker network create inside_network
+sudo docker network create outside_network
 ```
 
 Set the following variables in the .env file, examples are given in square brackets:
@@ -17,7 +17,7 @@ View the PUID and PGID for the current user using the ```id``` command.
 
 Bring up the stack:
 ```
-docker-compose -p application_server up -d
+sudo docker-compose -p application_server up -d
 ```
 
 Applications included with this stack:
