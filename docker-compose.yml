@@ -10,7 +10,7 @@
 # $TZ  
 # $DOCKERDIR
 
-version: "3"
+version: "3.7"
 
 networks:
   outside_network:
