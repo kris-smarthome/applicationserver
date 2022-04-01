@@ -39,3 +39,6 @@ Applications included with this stack:
 
 ## Post installation
 There are no post installation tasks for this stack.
+
+### Updating containers
+A simple bash script for updating your docker containers: https://gist.github.com/kris-smarthome/f759238723c1fff33f24ece580359a46
