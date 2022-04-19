@@ -1,8 +1,6 @@
 # Application server stack - Kris 22
 # 
 # Create networks before running docker-compose -p application_server up -d
-# docker network create inside_network
-# docker network create outside_network
 
 # .env file variables:
 # $PUID
@@ -11,14 +9,6 @@
 # $DOCKERDIR
 
 version: "3.7"
-
-networks:
-  outside_network:
-    external:
-      name: outside_network
-  inside_network:
-    external:
-      name: inside_network
 
 # Applications
 # [9000] NGINX proxy manager
@@ -47,8 +37,6 @@ services:
       - ${DOCKERDIR}/app_data/npm:/data
       - ${DOCKERDIR}/app_data/npm/letsencrypt:/etc/letsencrypt
       - /etc/localtime:/etc/localtime:ro
-    networks:
-      - outside_network
 
   # Portainer: Docker management
   #
@@ -67,29 +55,3 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DOCKERDIR}/app_data/portainer:/data
       - /etc/localtime:/etc/localtime:ro
-    networks:
-      - inside_network
-
-  # VaultWarden: Password manager
-  #
-  vaultwarden:
-    image: vaultwarden.server:latest
-    container_name: vaultwarden
-    restart: always
-    ports:
-      - "9002:80"
-    environment:
-      - WEBSOCKET_ENABLED=true
-      - SIGNUPS_ALLOWED=false
-      - DOMAIN=${DOMAIN}
-      - ADMIN_TOKEN=${ADMIN_TOKEN}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_SSL=${SMTP_SSL}
-      - SMTP_FROM=${SMTP_FROM}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-    volumes:
-      - ${DOCKER_DIR}/app_data/vaultwarden:/data
-    networks:
-      - inside_network
